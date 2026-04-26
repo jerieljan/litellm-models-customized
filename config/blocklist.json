@@ -1,3 +1,7 @@
 {
-    "patterns": []
+    "patterns": [
+        "babbage-002",
+        "davinci-002",
+        "gpt-4([^0-9]|$)"
+    ]
 }
