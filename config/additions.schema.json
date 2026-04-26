@@ -1,0 +1,109 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "patternProperties": {
+        "^.+$": {
+            "type": "object",
+            "description": "A single model entry matching LiteLLM's model_prices_and_context_window format.",
+            "properties": {
+                "litellm_provider": {
+                    "type": "string",
+                    "description": "One of https://docs.litellm.ai/docs/providers"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "chat",
+                        "embedding",
+                        "completion",
+                        "image_generation",
+                        "audio_transcription",
+                        "audio_speech",
+                        "moderation",
+                        "rerank",
+                        "search"
+                    ]
+                },
+                "max_tokens": {
+                    "oneOf": [{ "type": "integer" }, { "type": "string" }]
+                },
+                "max_input_tokens": {
+                    "oneOf": [{ "type": "integer" }, { "type": "string" }]
+                },
+                "max_output_tokens": {
+                    "oneOf": [{ "type": "integer" }, { "type": "string" }]
+                },
+                "input_cost_per_token": { "type": "number" },
+                "output_cost_per_token": { "type": "number" },
+                "input_cost_per_audio_token": { "type": "number" },
+                "output_cost_per_reasoning_token": { "type": "number" },
+                "cache_creation_input_token_cost": { "type": "number" },
+                "cache_read_input_token_cost": { "type": "number" },
+                "input_cost_per_token_above_200k_tokens": { "type": "number" },
+                "output_cost_per_token_above_200k_tokens": { "type": "number" },
+                "deprecation_date": { "type": "string" },
+                "supports_function_calling": { "type": "boolean" },
+                "supports_parallel_function_calling": { "type": "boolean" },
+                "supports_vision": { "type": "boolean" },
+                "supports_audio_input": { "type": "boolean" },
+                "supports_audio_output": { "type": "boolean" },
+                "supports_prompt_caching": { "type": "boolean" },
+                "supports_reasoning": { "type": "boolean" },
+                "supports_response_schema": { "type": "boolean" },
+                "supports_system_messages": { "type": "boolean" },
+                "supports_web_search": { "type": "boolean" },
+                "supports_tool_choice": { "type": "boolean" },
+                "supports_computer_use": { "type": "boolean" },
+                "supports_pdf_input": { "type": "boolean" },
+                "supports_assistant_prefill": { "type": "boolean" },
+                "supports_native_structured_output": { "type": "boolean" },
+                "supports_native_streaming": { "type": "boolean" },
+                "supports_embedding_image_input": { "type": "boolean" },
+                "supports_image_input": { "type": "boolean" },
+                "supports_video_input": { "type": "boolean" },
+                "supports_max_reasoning_effort": { "type": "boolean" },
+                "supports_minimal_reasoning_effort": { "type": "boolean" },
+                "supports_xhigh_reasoning_effort": { "type": "boolean" },
+                "output_vector_size": { "type": "integer" },
+                "output_cost_per_image": { "type": "number" },
+                "input_cost_per_image": { "type": "number" },
+                "input_cost_per_pixel": { "type": "number" },
+                "output_cost_per_pixel": { "type": "number" },
+                "tool_use_system_prompt_tokens": { "type": "integer" },
+                "max_document_chunks_per_query": { "type": "integer" },
+                "max_query_tokens": { "type": "integer" },
+                "max_tokens_per_document_chunk": { "type": "integer" },
+                "input_cost_per_video_per_second": { "type": "number" },
+                "input_cost_per_audio_per_second": { "type": "number" },
+                "output_cost_per_image_premium_image": { "type": "number" },
+                "search_context_cost_per_query": {
+                    "type": "object",
+                    "properties": {
+                        "search_context_size_high": { "type": "number" },
+                        "search_context_size_low": { "type": "number" },
+                        "search_context_size_medium": { "type": "number" }
+                    }
+                },
+                "supported_regions": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "metadata": { "type": "object" },
+                "source": { "type": "string" },
+                "supported_endpoints": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "input_cost_per_query": { "type": "number" },
+                "code_interpreter_cost_per_session": { "type": "number" },
+                "computer_use_input_cost_per_1k_tokens": { "type": "number" },
+                "computer_use_output_cost_per_1k_tokens": { "type": "number" },
+                "file_search_cost_per_1k_calls": { "type": "number" },
+                "file_search_cost_per_gb_per_day": { "type": "number" },
+                "vector_store_cost_per_gb_per_day": { "type": "number" }
+            },
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": false
+}

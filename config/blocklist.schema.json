@@ -1,0 +1,15 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+        "patterns": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "description": "Regex pattern to match against model names (keys in the upstream JSON)."
+            },
+            "description": "List of regex patterns. Models whose key matches any pattern will be removed from the compiled output."
+        }
+    },
+    "required": ["patterns"]
+}
