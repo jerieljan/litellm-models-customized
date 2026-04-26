@@ -1,4 +1,4 @@
-# LiteLLM Models Table Shortlist
+# LiteLLM Models Customized
 
 A curated, customizable version of [LiteLLM's `model_prices_and_context_window.json`](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
 
