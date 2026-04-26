@@ -2,6 +2,8 @@
     "patterns": [
         "babbage-002",
         "davinci-002",
-        "gpt-4([^0-9]|$)"
+	"gpt-3([^0-9]|$)",
+        "gpt-4([^0-9]|$)",
+	"gemini-2"
     ]
 }
