@@ -6,10 +6,12 @@ Fetches upstream model_prices_and_context_window.json from LiteLLM,
 applies blocklist filters and custom additions, and writes the compiled output.
 """
 
+import argparse
 import json
 import re
 import sys
 import urllib.request
+from datetime import date, datetime
 from pathlib import Path
 
 UPSTREAM_URL = (
@@ -94,6 +96,36 @@ def merge_additions(filtered, additions):
     return filtered
 
 
+def filter_deprecated(data, ignore=False):
+    if ignore:
+        print("Ignoring deprecation dates (--ignore-deprecations).")
+        return data
+
+    filtered = {}
+    removed = 0
+    today = date.today()
+
+    for key, value in data.items():
+        if key == "sample_spec":
+            filtered[key] = value
+            continue
+
+        deprecation_date_str = value.get("deprecation_date")
+        if deprecation_date_str:
+            try:
+                deprecation_date = datetime.strptime(deprecation_date_str, "%Y-%m-%d").date()
+                if deprecation_date <= today:
+                    removed += 1
+                    continue
+            except ValueError:
+                print(f"Warning: Invalid deprecation_date format for '{key}': '{deprecation_date_str}'")
+
+        filtered[key] = value
+
+    print(f"Deprecation filter removed {removed} model(s), kept {len(filtered) - (1 if 'sample_spec' in filtered else 0)}.")
+    return filtered
+
+
 def sort_output(data):
     if "sample_spec" in data:
         sample = {"sample_spec": data.pop("sample_spec")}
@@ -105,6 +137,16 @@ def sort_output(data):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Compile model_prices_and_context_window.json from upstream LiteLLM data."
+    )
+    parser.add_argument(
+        "--ignore-deprecations",
+        action="store_true",
+        help="Include models whose deprecation_date has passed.",
+    )
+    args = parser.parse_args()
+
     # 1. Fetch upstream
     upstream = fetch_upstream()
 
@@ -122,10 +164,13 @@ def main():
     # 5. Merge additions
     merged = merge_additions(filtered, additions)
 
-    # 6. Sort
+    # 6. Filter deprecated models
+    merged = filter_deprecated(merged, ignore=args.ignore_deprecations)
+
+    # 7. Sort
     final = sort_output(merged)
 
-    # 7. Write output
+    # 8. Write output
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(final, f, indent=4, ensure_ascii=False)
         f.write("\n")

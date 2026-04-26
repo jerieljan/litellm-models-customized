@@ -86,8 +86,15 @@ What happens:
 3. Validates `additions.json` against `additions.schema.json`.
 4. Applies the blocklist (drops matching upstream keys).
 5. Merges additions (injects/overrides).
-6. Sorts output: `sample_spec` first, then alphabetical.
-7. Writes `model_prices_and_context_window.json`.
+6. **Filters deprecated models** — by default, any model whose `deprecation_date` is today or earlier is removed. This applies to both upstream and custom additions.
+7. Sorts output: `sample_spec` first, then alphabetical.
+8. Writes `model_prices_and_context_window.json`.
+
+To include deprecated models, pass `--ignore-deprecations`:
+
+```bash
+python scripts/compile.py --ignore-deprecations
+```
 
 ### 4. Review
 
@@ -132,6 +139,7 @@ git commit -m "chore: sync upstream and recompile"
 | Addition not appearing | Key was not blocked and upstream doesn't have it either | Check key spelling; verify upstream key format |
 | Addition appears but fields are wrong | Not matching LiteLLM spec | Reference `sample_spec` in compiled output or upstream source |
 | Compile script fails schema validation | Malformed JSON or missing required fields | Run JSON lint; compare against schema |
+| Deprecated model missing from output | Model's `deprecation_date` is today or earlier | Pass `--ignore-deprecations` to keep it |
 
 ## Dependencies
 
