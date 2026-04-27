@@ -70,13 +70,13 @@ The upstream LiteLLM registry contains hundreds of Fireworks AI models, most of 
 
 **To refresh the allowlist:**
 
-1. Ensure Chrome is running with remote debugging on port 9222:
+1. **Prerequisite:** Ensure Chrome is running with remote debugging on port 9222. The script will exit early with a clear message if it cannot detect an active CDP session. Start Chrome yourself, for example:
    ```bash
    /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
    ```
 2. Run the crawl script:
    ```bash
-   python3 scripts/crawl-fireworks.py
+   uv run python scripts/crawl-fireworks.py
    ```
 3. Review the diff:
    ```bash
@@ -109,7 +109,7 @@ check-jsonschema --schemafile config/additions.schema.json config/fireworks-serv
 Run the compilation script:
 
 ```bash
-python scripts/compile.py
+uv run python scripts/compile.py
 ```
 
 What happens:
@@ -126,7 +126,7 @@ What happens:
 To include deprecated models, pass `--ignore-deprecations`:
 
 ```bash
-python scripts/compile.py --ignore-deprecations
+uv run python scripts/compile.py --ignore-deprecations
 ```
 
 ### 4. Review
@@ -158,7 +158,7 @@ The compiled JSON is part of the repo so LiteLLM can fetch it via raw GitHub URL
 Since customizations live in `config/`, updating upstream is trivial:
 
 ```bash
-python scripts/compile.py
+uv run python scripts/compile.py
 git diff   # review what upstream changed
 git add model_prices_and_context_window.json
 git commit -m "chore: sync upstream and recompile"
@@ -177,7 +177,7 @@ git commit -m "chore: sync upstream and recompile"
 ## Dependencies
 
 ```bash
-pip install -r scripts/requirements.txt
+uv pip install -r scripts/requirements.txt
 ```
 
 The only required dependency is `jsonschema` for validation. `requests` is not used; the script uses `urllib` from the standard library.

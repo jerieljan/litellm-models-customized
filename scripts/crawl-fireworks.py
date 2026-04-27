@@ -46,6 +46,26 @@ UPSTREAM_URL = (
 CDP_PORT = 9222
 LISTING_URL = "https://app.fireworks.ai/models?filter=LLM&serverless=true"
 
+
+def verify_chrome_debugging() -> None:
+    """Check that a Chrome CDP session is available on CDP_PORT."""
+    try:
+        with urllib.request.urlopen(
+            f"http://localhost:{CDP_PORT}/json/version", timeout=2
+        ) as response:
+            if response.status == 200:
+                return
+    except urllib.error.URLError:
+        pass
+    except Exception:
+        pass
+    print(
+        f"Error: Chrome remote debugging not detected on port {CDP_PORT}.\n"
+        "Please start Chrome with --remote-debugging-port=9222 before running this script.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
 # ---------------------------------------------------------------------------
 # Agent-browser helpers
 # ---------------------------------------------------------------------------
@@ -290,6 +310,8 @@ def build_entry(model_id: str, listing_text: str, detail: dict, upstream_entry: 
 
 
 def main() -> int:
+    verify_chrome_debugging()
+
     # ------------------------------------------------------------------
     # 1. Crawl listing
     # ------------------------------------------------------------------
