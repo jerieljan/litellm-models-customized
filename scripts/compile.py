@@ -25,6 +25,7 @@ OUTPUT_PATH = REPO_ROOT / "model_prices_and_context_window.json"
 
 BLOCKLIST_PATH = CONFIG_DIR / "blocklist.json"
 ADDITIONS_PATH = CONFIG_DIR / "additions.json"
+FIREWORKS_PATH = CONFIG_DIR / "fireworks-serverless.json"
 BLOCKLIST_SCHEMA_PATH = CONFIG_DIR / "blocklist.schema.json"
 ADDITIONS_SCHEMA_PATH = CONFIG_DIR / "additions.schema.json"
 
@@ -164,13 +165,19 @@ def main():
     # 5. Merge additions
     merged = merge_additions(filtered, additions)
 
-    # 6. Filter deprecated models
+    # 6. Merge Fireworks serverless allowlist (if present)
+    if FIREWORKS_PATH.exists():
+        fireworks = load_json(FIREWORKS_PATH)
+        validate_with_schema(fireworks, ADDITIONS_SCHEMA_PATH, "fireworks-serverless")
+        merged = merge_additions(merged, fireworks)
+
+    # 7. Filter deprecated models
     merged = filter_deprecated(merged, ignore=args.ignore_deprecations)
 
-    # 7. Sort
+    # 8. Sort
     final = sort_output(merged)
 
-    # 8. Write output
+    # 9. Write output
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(final, f, indent=4, ensure_ascii=False)
         f.write("\n")
