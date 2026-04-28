@@ -4,7 +4,9 @@ A curated, customizable version of [LiteLLM's `model_prices_and_context_window.j
 
 ## What This Is
 
-This repository fetches the upstream LiteLLM model pricing & context window database, applies your blocklist filters and custom additions, and produces a clean `model_prices_and_context_window.json` that LiteLLM itself can consume from a custom URL.
+This repository fetches the upstream LiteLLM model pricing & context window database, applies blocklist filters and custom additions, and produces a clean `model_prices_and_context_window.json` that LiteLLM itself can consume from a custom URL.
+
+You can see how this repos' JSON diverges from upstreama from [CHANGELOG.md](./CHANGELOG.md)
 
 ## Why Use This?
 
