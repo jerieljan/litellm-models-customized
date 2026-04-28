@@ -74,18 +74,24 @@ Edit `config/additions.json` to add or override models:
 
 ### 3. Compile
 
+"Compiling" is basically fetching the model_prices_and_context_window.json file from upstream LiteLLM then
+applying the config changes on top of it.
+
 ```bash
 python scripts/compile.py
 ```
 
 This will:
-1. Fetch the latest upstream JSON from LiteLLM
+1. Fetch the latest upstream JSON from LiteLLM.
 2. Apply your blocklist
 3. Merge your additions (additions override upstream for the same key)
 4. Sort deterministically (`sample_spec` first, then alphabetical)
 5. Write `model_prices_and_context_window.json`
 
 ### 4. Commit
+
+Commit and push, so that the JSON file gets reflected on the repo and LiteLLM installations
+pointed to it (e.g., `https://raw.githubusercontent.com/jerieljan/litellm-models-customized/master/model_prices_and_context_window.json` will see the changes.)
 
 ```bash
 git add model_prices_and_context_window.json config/
@@ -101,18 +107,18 @@ model_list:
   - model_name: "*"
     litellm_params:
       model: "*"
-      custom_prompt_template: "https://raw.githubusercontent.com/YOUR_ORG/litellm-models-table-shortlist/main/model_prices_and_context_window.json"
+      custom_prompt_template: "https://raw.githubusercontent.com/jerieljan/litellm-models-customized/master/model_prices_and_context_window.json"
 ```
 
 Or set the environment variable:
 
 ```bash
-export LITELLM_MODEL_COST_MAP_URL="https://raw.githubusercontent.com/YOUR_ORG/litellm-models-table-shortlist/main/model_prices_and_context_window.json"
+export LITELLM_MODEL_COST_MAP_URL="https://raw.githubusercontent.com/jerieljan/litellm-models-customized/master/model_prices_and_context_window.json"
 ```
 
 ## Syncing / Rebasing on Upstream
 
-Since your customizations live in `config/`, updating is trivial:
+Updating simply means running the compile and other scripts then committing it to the repo:
 
 ```bash
 python scripts/compile.py
