@@ -1,4 +1,25 @@
 {
+    "fireworks_ai/kimi-k2p7-code": {
+        "litellm_provider": "fireworks_ai",
+        "mode": "chat",
+        "source": "https://fireworks.ai/models/fireworks/kimi-k2p7-code",
+        "input_cost_per_token": 9.499999999999999e-07,
+        "supports_vision": true
+    },
+    "fireworks_ai/minimax-m3": {
+        "litellm_provider": "fireworks_ai",
+        "mode": "chat",
+        "source": "https://fireworks.ai/models/fireworks/minimax-m3",
+        "input_cost_per_token": 3e-07,
+        "supports_vision": true
+    },
+    "fireworks_ai/qwen3p7-plus": {
+        "litellm_provider": "fireworks_ai",
+        "mode": "chat",
+        "source": "https://fireworks.ai/models/fireworks/qwen3p7-plus",
+        "input_cost_per_token": 4.0000000000000003e-07,
+        "supports_vision": true
+    },
     "fireworks_ai/deepseek-v4-pro": {
         "litellm_provider": "fireworks_ai",
         "mode": "chat",
@@ -81,6 +102,12 @@
         "supports_reasoning": true,
         "supports_response_schema": true,
         "supports_tool_choice": true
+    },
+    "fireworks_ai/nemotron-3-ultra-nvfp4": {
+        "litellm_provider": "fireworks_ai",
+        "mode": "chat",
+        "source": "https://fireworks.ai/models/fireworks/nemotron-3-ultra-nvfp4",
+        "input_cost_per_token": 6e-07
     },
     "fireworks_ai/minimax-m2p5": {
         "litellm_provider": "fireworks_ai",
