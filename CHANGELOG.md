@@ -23,7 +23,7 @@ These regex patterns in [`config/blocklist.json`](./config/blocklist.json) are a
 
 ### Automatic Deprecation Filter
 
-The compilation script automatically drops any model, upstream or custom whose `deprecation_date` is today or earlier. This removed **347 deprecated models** on its introduction and counting and continues to apply on every recompile. 
+The compilation script automatically drops any model, upstream or custom, whose `deprecation_date` is today or earlier. This removed **347 deprecated models** on its introduction and continues to apply on every recompile.
 
 ### Fireworks AI Serverless Allowlist
 
@@ -33,27 +33,73 @@ These entries are crawled from the Fireworks AI gallery and use the short key fo
 
 | Model Key | Source | Capabilities |
 |-----------|--------|--------------|
-| `fireworks_ai/deepseek-v4-pro` | [Pricing](https://fireworks.ai/models/fireworks/deepseek-v4-pro) | Function calling |
-| `fireworks_ai/kimi-k2p6` | [Pricing](https://fireworks.ai/models/fireworks/kimi-k2p6) | Function calling, Vision |
-| `fireworks_ai/minimax-m2p7` | [Pricing](https://fireworks.ai/models/fireworks/minimax-m2p7) | Function calling |
-| `fireworks_ai/qwen3p6-plus` | [Pricing](https://fireworks.ai/models/fireworks/qwen3p6-plus) | Function calling, Vision |
-| `fireworks_ai/glm-5p1` | [Pricing](https://fireworks.ai/models/fireworks/glm-5p1) | Function calling |
-| `fireworks_ai/kimi-k2p5` | [Pricing](https://fireworks.ai/pricing) | Function calling, Response schema, Tool choice |
-| `fireworks_ai/deepseek-v3p2` | [Pricing](https://fireworks.ai/models/fireworks/deepseek-v3p2) | Function calling, Reasoning, Response schema, Tool choice |
-| `fireworks_ai/glm-5` | [Pricing](https://fireworks.ai/models/fireworks/glm-5) | Function calling |
-| `fireworks_ai/deepseek-v3p1` | [Pricing](https://fireworks.ai/pricing) | Reasoning, Response schema, Tool choice |
+| `fireworks_ai/deepseek-v4-flash` | [Pricing](https://fireworks.ai/models/fireworks/deepseek-v4-flash) | — |
+| `fireworks_ai/deepseek-v4-pro` | [Pricing](https://fireworks.ai/models/fireworks/deepseek-v4-pro) | — |
+| `fireworks_ai/glm-5p1` | [Pricing](https://fireworks.ai/models/fireworks/glm-5p1) | Reasoning |
 | `fireworks_ai/gpt-oss-120b` | [Pricing](https://fireworks.ai/pricing) | Function calling, Reasoning, Response schema, Tool choice |
 | `fireworks_ai/gpt-oss-20b` | [Pricing](https://fireworks.ai/pricing) | Function calling, Reasoning, Response schema, Tool choice |
-| `fireworks_ai/llama-v3p3-70b-instruct` | [Pricing](https://fireworks.ai/models/fireworks/llama-v3p3-70b-instruct) | — |
-| `fireworks_ai/minimax-m2p5` | [Pricing](https://fireworks.ai/models/fireworks/minimax-m2p5) | Function calling |
-| `fireworks_ai/glm-4p7` | [Pricing](https://fireworks.ai/models/fireworks/glm-4p7) | Function calling, Reasoning, Response schema, Tool choice |
-| `fireworks_ai/qwen3-vl-30b-a3b-thinking` | [Pricing](https://fireworks.ai/models/fireworks/qwen3-vl-30b-a3b-thinking) | — |
-| `fireworks_ai/qwen3-vl-30b-a3b-instruct` | [Pricing](https://fireworks.ai/models/fireworks/qwen3-vl-30b-a3b-instruct) | — |
-| `fireworks_ai/qwen3-8b` | [Pricing](https://fireworks.ai/models/fireworks/qwen3-8b) | Reasoning |
+| `fireworks_ai/kimi-k2p5` | [Pricing](https://fireworks.ai/pricing) | Function calling, Response schema, Tool choice |
+| `fireworks_ai/kimi-k2p6` | [Pricing](https://fireworks.ai/models/fireworks/kimi-k2p6) | Vision |
+| `fireworks_ai/kimi-k2p7-code` | [Pricing](https://fireworks.ai/models/fireworks/kimi-k2p7-code) | Vision |
+| `fireworks_ai/minimax-m2p5` | [Pricing](https://fireworks.ai/models/fireworks/minimax-m2p5) | — |
+| `fireworks_ai/minimax-m2p7` | [Pricing](https://fireworks.ai/models/fireworks/minimax-m2p7) | — |
+| `fireworks_ai/minimax-m3` | [Pricing](https://fireworks.ai/models/fireworks/minimax-m3) | Vision |
+| `fireworks_ai/nemotron-3-ultra-nvfp4` | [Pricing](https://fireworks.ai/models/fireworks/nemotron-3-ultra-nvfp4) | — |
+| `fireworks_ai/qwen3-embedding-8b` | [Pricing](https://fireworks.ai/models/fireworks/qwen3-embedding-8b) | — |
+| `fireworks_ai/qwen3-reranker-8b` | [Pricing](https://fireworks.ai/models/fireworks/qwen3-reranker-8b) | Rerank |
+| `fireworks_ai/qwen3p6-plus` | [Pricing](https://fireworks.ai/models/fireworks/qwen3p6-plus) | Vision |
+| `fireworks_ai/qwen3p7-plus` | [Pricing](https://fireworks.ai/models/fireworks/qwen3p7-plus) | Vision |
 
 ---
 
 ## History
+
+### 2026-06-16
+
+- **Added** `fireworks_ai/kimi-k2p7-code`, `fireworks_ai/minimax-m3`, `fireworks_ai/qwen3p7-plus`, and `fireworks_ai/nemotron-3-ultra-nvfp4` to the serverless allowlist.  
+  Commit: [`27d71eb`](https://github.com/jerieljan/litellm-models-customized/commit/27d71eb)
+
+### 2026-06-11
+
+- **Synced upstream** and recompiled.  
+  Added new providers: `snowflake` (Claude 3.7/4 Sonnet/Opus, GPT-5, Arctic embed, Llama 4 Maverick), `fal_ai` (nano-banana), `soniox` (stt-async-v4), `you_com` (search), `apiserpent` (deep_search, search), `inception` (mercury-2, mercury-edit-2), `bedrock_mantle` (gpt-5.4, gpt-5.5).  
+  Added new models: `anthropic.claude-fable-5` (and `bedrock`, `vertex_ai`, regional, and `claude-fable-5` aliases), `azure_ai/kimi-k2.6`, `mistral/ministral-8b-latest`, `vertex_ai/google/gemma-4-26b-a4b-it-maas`, `minimax/MiniMax-M3`.  
+  Dropped upstream: legacy `moonshot/*` Kimi preview/8k/32k/128k variants, `xai/grok-3`, `xai/grok-4-0709`, `xai/grok-4-fast*`, `xai/grok-4-1-fast*`, `xai/grok-code-fast-1*`, `eu.anthropic.claude-opus-4-8`.  
+  Commit: [`09e17fd`](https://github.com/jerieljan/litellm-models-customized/commit/09e17fd)
+
+### 2026-05-29
+
+- **Synced upstream** and recompiled.  
+  Added `anthropic.claude-opus-4-8` and all regional/`bedrock`/`vertex_ai`/`azure_ai` aliases, `gemini-3.1-flash-lite` (and `vertex_ai`/`openrouter` aliases), `mistral/ministral-8b-2512`, and OCI-hosted Cohere / Llama / OpenAI / xAI entries.  
+  Added `openrouter/xiaomi/mimo-v2.5(-pro)`, `reducto/parse-v3`, `reducto/parse-legacy`.  
+  Updated `fireworks_ai/glm-5p1` with cache read, output, max tokens, and capability flags.  
+  Dropped upstream: `gemini-3.1-flash-lite-preview`, `gemini-3.1-flash-live-preview`, `oci/xai.grok-3`.  
+  Commit: [`36a8360`](https://github.com/jerieljan/litellm-models-customized/commit/36a8360)
+
+### 2026-05-20
+
+- **Refactored** the serverless allowlist.  
+  Simplified most entries to `mode`/`source`/`input_cost_per_token` only (and `supports_vision` where applicable); dropped redundant `output_cost_per_token`/`cache_read_input_token_cost`/`max_tokens`/non-vision capability fields to align with how the Fireworks serverless UI surfaces them.  
+  **Removed** from the allowlist: `fireworks_ai/deepseek-v3p1`, `fireworks_ai/deepseek-v3p2`, `fireworks_ai/glm-4p7`, `fireworks_ai/glm-5`, `fireworks_ai/llama-v3p3-70b-instruct`, `fireworks_ai/qwen3-8b`, `fireworks_ai/qwen3-vl-30b-a3b-instruct`, `fireworks_ai/qwen3-vl-30b-a3b-thinking` (no longer serverless).  
+  **Added** `fireworks_ai/deepseek-v4-flash`, `fireworks_ai/qwen3-reranker-8b` (rerank mode), and `fireworks_ai/qwen3-embedding-8b`.  
+- **Synced upstream** and recompiled.  
+  Added `azure_ai/gpt-5.4` family (5.4 / 5.4-mini / 5.4-nano / 5.4-pro and dated variants), `gemini-3.5-flash` (and `vertex_ai` alias), `gpt-realtime-2`, `jp.anthropic.claude-sonnet-4-6`.  
+  Removed `claude-opus-4-20250514` and `claude-sonnet-4-20250514`.  
+  Commit: [`10b4682`](https://github.com/jerieljan/litellm-models-customized/commit/10b4682)
+
+### 2026-05-12
+
+- **Synced upstream** and recompiled.  
+  Added `xai/grok-4.3`, `xai/grok-4.3-latest`, `sambanova/MiniMax-M2.7`, `openrouter/qwen/qwen3.6-plus`.  
+  Removed `vertex_ai/claude-3-7-sonnet@20250219`.  
+  Commit: [`4d32d55`](https://github.com/jerieljan/litellm-models-customized/commit/4d32d55)
+
+### 2026-05-06
+
+- **Synced upstream** and recompiled.  
+  Added `gpt-image-2` (and `azure` alias + dated variant), Crusoe provider entries (`Qwen3-235B-A22B-Instruct-2507`, `DeepSeek-R1-0528`, `DeepSeek-V3-0324`, `gemma-3-12b-it`, `Llama-3.3-70B-Instruct`, `Kimi-K2-Thinking`, `gpt-oss-120b`), and `vertex_ai/xai/grok-4.1-fast-{reasoning,non-reasoning}` and `grok-4.20-{reasoning,non-reasoning}`.  
+  Removed `azure/text-embedding-3-small` and `claude-3-opus-20240229`.  
+  Commit: [`dd2e09e`](https://github.com/jerieljan/litellm-models-customized/commit/dd2e09e)
 
 ### 2026-04-28
 
