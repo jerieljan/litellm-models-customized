@@ -162,6 +162,19 @@
         "source": "https://fireworks.ai/models/fireworks/nemotron-3-ultra-nvfp4",
         "input_cost_per_token": 6e-07
     },
+    "fireworks_ai/muse-glimmer-30b": {
+        "litellm_provider": "fireworks_ai",
+        "mode": "chat",
+        "source": "https://fireworks.ai/models/fireworks/muse-glimmer-30b",
+        "input_cost_per_token": 3.5e-07,
+        "supports_vision": true
+    },
+    "fireworks_ai/nemotron-lightning-3p5-30b-a3b": {
+        "litellm_provider": "fireworks_ai",
+        "mode": "chat",
+        "source": "https://fireworks.ai/models/fireworks/nemotron-lightning-3p5-30b-a3b",
+        "input_cost_per_token": 5.0000000000000004e-08
+    },
     "fireworks_ai/inkling": {
         "litellm_provider": "fireworks_ai",
         "mode": "chat",
