@@ -1,9 +1,31 @@
 {
-    "fireworks_ai/deepseek-v4-pro-0813": {
+    "fireworks_ai/glm-5p3": {
         "litellm_provider": "fireworks_ai",
         "mode": "chat",
-        "source": "https://fireworks.ai/models/fireworks/deepseek-v4-pro-0813",
-        "input_cost_per_token": 1.32e-06
+        "source": "https://fireworks.ai/models/fireworks/glm-5p3",
+        "input_cost_per_token": 1.4e-06,
+        "cache_read_input_token_cost": 2.6e-07,
+        "output_cost_per_token": 4.4e-06,
+        "max_tokens": 1048576,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 1048576,
+        "supports_function_calling": true
+    },
+    "fireworks_ai/deepseek-v4-pro-0813": {
+        "cache_read_input_token_cost": 4.4e-08,
+        "input_cost_per_token": 1.32e-06,
+        "litellm_provider": "fireworks_ai",
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 131072,
+        "max_tokens": 131072,
+        "mode": "chat",
+        "output_cost_per_token": 3.96e-06,
+        "source": "https://docs.fireworks.ai/serverless/pricing",
+        "supports_function_calling": true,
+        "supports_reasoning": true,
+        "supports_response_schema": true,
+        "supports_tool_choice": true,
+        "supports_vision": false
     },
     "fireworks_ai/muse-glimmer-30b": {
         "cache_read_input_token_cost": 4e-08,
@@ -76,6 +98,11 @@
         "max_tokens": 131072,
         "mode": "chat",
         "output_cost_per_token": 1.5e-05,
+        "reasoning_effort_levels": [
+            "low",
+            "high",
+            "max"
+        ],
         "source": "https://docs.fireworks.ai/serverless/pricing",
         "supports_function_calling": true,
         "supports_reasoning": true,
@@ -131,22 +158,6 @@
         "supports_tool_choice": true,
         "supports_vision": true
     },
-    "fireworks_ai/deepseek-v4-pro": {
-        "cache_read_input_token_cost": 1.45e-07,
-        "input_cost_per_token": 1.74e-06,
-        "litellm_provider": "fireworks_ai",
-        "max_input_tokens": 1048576,
-        "max_output_tokens": 384000,
-        "max_tokens": 384000,
-        "mode": "chat",
-        "output_cost_per_token": 3.48e-06,
-        "source": "https://docs.fireworks.ai/serverless/pricing",
-        "supports_function_calling": true,
-        "supports_reasoning": true,
-        "supports_response_schema": true,
-        "supports_tool_choice": true,
-        "supports_vision": false
-    },
     "fireworks_ai/gpt-oss-120b": {
         "cache_read_input_token_cost": 1.5e-08,
         "input_cost_per_token": 1.5e-07,
@@ -156,22 +167,6 @@
         "max_tokens": 32768,
         "mode": "chat",
         "output_cost_per_token": 6e-07,
-        "source": "https://docs.fireworks.ai/serverless/pricing",
-        "supports_function_calling": true,
-        "supports_reasoning": true,
-        "supports_response_schema": true,
-        "supports_tool_choice": true,
-        "supports_vision": false
-    },
-    "fireworks_ai/gpt-oss-20b": {
-        "cache_read_input_token_cost": 3.5e-08,
-        "input_cost_per_token": 7e-08,
-        "litellm_provider": "fireworks_ai",
-        "max_input_tokens": 131072,
-        "max_output_tokens": 32768,
-        "max_tokens": 32768,
-        "mode": "chat",
-        "output_cost_per_token": 3e-07,
         "source": "https://docs.fireworks.ai/serverless/pricing",
         "supports_function_calling": true,
         "supports_reasoning": true,
@@ -195,11 +190,30 @@
         "supports_tool_choice": true,
         "supports_vision": false
     },
+    "fireworks_ai/glm-5p3-flash": {
+        "litellm_provider": "fireworks_ai",
+        "mode": "chat",
+        "source": "https://fireworks.ai/models/fireworks/glm-5p3-flash",
+        "input_cost_per_token": 1.5e-07,
+        "cache_read_input_token_cost": 2.9e-08,
+        "output_cost_per_token": 5e-07,
+        "max_tokens": 1048576,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 1048576,
+        "supports_function_calling": true,
+        "supports_vision": true
+    },
     "fireworks_ai/inkling": {
         "litellm_provider": "fireworks_ai",
         "mode": "chat",
         "source": "https://fireworks.ai/models/fireworks/inkling",
         "input_cost_per_token": 1e-06,
+        "cache_read_input_token_cost": 1.7000000000000001e-07,
+        "output_cost_per_token": 4.05e-06,
+        "max_tokens": 1048576,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 1048576,
+        "supports_function_calling": true,
         "supports_vision": true
     },
     "fireworks_ai/qwen3p7-plus": {
@@ -233,37 +247,5 @@
         "supports_response_schema": true,
         "supports_tool_choice": true,
         "supports_vision": true
-    },
-    "fireworks_ai/minimax-m2p7": {
-        "cache_read_input_token_cost": 6e-08,
-        "input_cost_per_token": 3e-07,
-        "litellm_provider": "fireworks_ai",
-        "max_input_tokens": 196608,
-        "max_output_tokens": 196608,
-        "max_tokens": 196608,
-        "mode": "chat",
-        "output_cost_per_token": 1.2e-06,
-        "source": "https://docs.fireworks.ai/serverless/pricing",
-        "supports_function_calling": true,
-        "supports_reasoning": true,
-        "supports_response_schema": true,
-        "supports_tool_choice": true,
-        "supports_vision": false
-    },
-    "fireworks_ai/qwen3-reranker-8b": {
-        "max_tokens": 40960,
-        "max_input_tokens": 40960,
-        "max_output_tokens": 40960,
-        "input_cost_per_token": 0.0,
-        "output_cost_per_token": 0.0,
-        "litellm_provider": "fireworks_ai",
-        "mode": "rerank",
-        "source": "https://fireworks.ai/models/fireworks/qwen3-reranker-8b"
-    },
-    "fireworks_ai/qwen3-embedding-8b": {
-        "litellm_provider": "fireworks_ai",
-        "mode": "chat",
-        "source": "https://fireworks.ai/models/fireworks/qwen3-embedding-8b",
-        "input_cost_per_token": 1.0000000000000001e-07
     }
 }
