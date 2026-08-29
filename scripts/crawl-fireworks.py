@@ -112,44 +112,78 @@ def eval_js(js_code: str, timeout: int = 60):
 # ---------------------------------------------------------------------------
 
 
-def parse_price(text: str) -> float | None:
-    """Convert a price string like '$0.95/M' to cost-per-token."""
-    m = re.search(r"\$([0-9.]+)/M", text)
-    if not m:
-        return None
-    return float(m.group(1)) / 1_000_000
+def _to_cost(m: re.Match | None) -> float | None:
+    """Convert a '$X/M' regex match to cost-per-token."""
+    return float(m.group(1)) / 1_000_000 if m else None
+
+
+def parse_prices(
+    card_text: str, pricing_text: str
+) -> tuple[float | None, float | None, float | None]:
+    """Return (input, cached input, output) cost-per-token.
+
+    Detail pages put the label before the price:
+        "Uncached Input\\n$1.40/M\\nCached Input\\n$0.26/M\\nOutput\\n$4.40/M"
+    Listing cards glue the label after the price with no whitespace:
+        "$1.40/Muncached | $0.26/Mcached | $4.40/Moutput"
+    """
+    input_cost = _to_cost(
+        re.search(r"Uncached Input\s*\$([0-9.]+)/M", pricing_text, re.IGNORECASE)
+    )
+    cached_cost = _to_cost(
+        re.search(r"\bCached Input\s*\$([0-9.]+)/M", pricing_text, re.IGNORECASE)
+    )
+    output_cost = _to_cost(
+        re.search(r"\bOutput\s*\$([0-9.]+)/M", pricing_text, re.IGNORECASE)
+    )
+
+    # Fall back to the listing card format when the detail page has no prices.
+    if input_cost is None:
+        input_cost = _to_cost(
+            re.search(r"\$([0-9.]+)/M\s*uncached", card_text, re.IGNORECASE)
+        )
+    if cached_cost is None:
+        cached_cost = _to_cost(
+            re.search(r"\$([0-9.]+)/M\s*cached\b", card_text, re.IGNORECASE)
+        )
+    if output_cost is None:
+        output_cost = _to_cost(
+            re.search(r"\$([0-9.]+)/M\s*output\b", card_text, re.IGNORECASE)
+        )
+
+    return input_cost, cached_cost, output_cost
 
 
 def parse_context(text: str) -> int | None:
-    """Extract context length from text like '262k Context' or '40k Context'."""
-    m = re.search(r"([0-9.]+)k\s+Context", text, re.IGNORECASE)
+    """Extract context length from text like 'Context 1M', 'Context 262k',
+    or the detail-page form 'Context Length\\n1M tokens'."""
+    m = re.search(r"Context(?: Length)?\s*:?\s*([0-9.]+)\s*(k|M)\b", text, re.IGNORECASE)
     if not m:
         return None
     val = float(m.group(1))
-    # Most upstream values are powers of two (e.g. 262144 = 256*1024).
-    # For round numbers like 262k we use the nearest common power-of-two
-    # when it makes sense, otherwise just multiply by 1024.
-    if val == 262:
-        return 262144
-    if val == 131:
-        return 131072
-    if val == 196:
-        return 200704  # 196 * 1024
-    if val == 202:
-        return 202800  # matches upstream glm-4p7
-    if val == 163:
-        return 163840  # matches upstream deepseek-v3p2
-    if val == 40:
-        return 40960
-    return int(val * 1024)
+    if m.group(2).lower() == "m":
+        return int(val * 1_048_576)
+    # Upstream uses exact values for k-denominated contexts, not plain
+    # multiples of 1024 (e.g. 262k means 262144, not 268288).
+    k_map = {
+        40: 40960,
+        131: 131072,
+        163: 163840,  # matches upstream deepseek-v3p2
+        196: 200704,
+        202: 202800,  # matches upstream glm-4p7
+        262: 262144,
+        512: 512000,  # matches upstream minimax-m3
+    }
+    return k_map.get(int(val), int(val * 1024))
 
 
 def parse_capabilities(text: str) -> dict[str, bool]:
-    """Parse Supported Functionality section into boolean flags.
+    """Parse the detail page "Details" section into boolean capability flags.
 
-    Fireworks detail pages concatenate labels without newlines, e.g.:
-    "...Function CallingSupportedEmbeddingsNot supported..."
-    We use regex to find "LabelSupported" vs "LabelNot supported".
+    The Features block renders one row per capability, e.g.:
+    "Function Calling\\nSupported" or "Image Input\\nNot supported".
+    Matching is done on whitespace-stripped text so "LabelSupported" vs
+    "LabelNot supported" can be found regardless of line breaks.
     """
     caps = {}
     lower = text.lower().replace(" ", "").replace("\n", "")
@@ -182,7 +216,7 @@ def crawl_listing() -> list[dict]:
     js = (
         "JSON.stringify("
         "Array.from(document.querySelectorAll('a[href*=\"/models/fireworks/\"]'))"
-        ".filter(a => a.innerText.includes('/M') && a.innerText.includes('Serverless'))"
+        ".filter(a => a.innerText.includes('/M') && a.innerText.includes('Serverless') && a.innerText.includes('LLM'))"
         ".map(a => {"
         "  const href = a.href;"
         "  const id = href.split('/models/fireworks/')[1].split('?')[0];"
@@ -207,17 +241,21 @@ def crawl_model_detail(model_id: str, href: str) -> dict:
         "JSON.stringify({"
         "  modelId: window.location.pathname.split('/').pop(),"
         "  title: document.title,"
-        "  metadata: (() => {"
-        "    const h = Array.from(document.querySelectorAll('h3')).find(el => el.innerText.includes('Metadata'));"
-        "    return h ? h.parentElement.innerText : '';"
+        "  details: (() => {"
+        "    const t = document.body.innerText;"
+        "    const s = t.indexOf('Details');"
+        "    if (s < 0) return '';"
+        "    const e = t.indexOf('View Full Spec', s);"
+        "    return t.slice(s, e > s ? e : s + 2500);"
         "  })(),"
-        "  specification: (() => {"
-        "    const h = Array.from(document.querySelectorAll('h3')).find(el => el.innerText.includes('Specification'));"
-        "    return h ? h.parentElement.innerText : '';"
-        "  })(),"
-        "  functionality: (() => {"
-        "    const h = Array.from(document.querySelectorAll('h3')).find(el => el.innerText.includes('Supported Functionality'));"
-        "    return h ? h.parentElement.innerText : '';"
+        "  pricing: (() => {"
+        "    const t = document.body.innerText;"
+        "    const s = t.indexOf('Uncached Input');"
+        "    if (s < 0) return '';"
+        "    let seg = t.slice(s, s + 400);"
+        "    const p = seg.indexOf('Priority');"
+        "    if (p > 0) seg = seg.slice(0, p);"
+        "    return seg;"
         "  })()"
         "})"
     )
@@ -263,27 +301,17 @@ def build_entry(model_id: str, listing_text: str, detail: dict, upstream_entry: 
         return entry
 
     # No upstream entry — build from crawl data
+    detail_text = detail.get("details", "") if isinstance(detail, dict) else ""
+    pricing_text = detail.get("pricing", "") if isinstance(detail, dict) else ""
+
     entry: dict[str, object] = {
         "litellm_provider": "fireworks_ai",
         "mode": "chat",
         "source": f"https://fireworks.ai/models/fireworks/{model_id}",
     }
 
-    # Parse pricing from listing card text
-    input_cost = parse_price(listing_text)
-    cached_cost = None
-    output_cost = None
-
-    # Look for cached input price
-    cached_match = re.search(r"\$([0-9.]+)/M\s+Cached\s+Input", listing_text, re.IGNORECASE)
-    if cached_match:
-        cached_cost = float(cached_match.group(1)) / 1_000_000
-
-    # Look for output price
-    output_match = re.search(r"\$([0-9.]+)/M\s+Output", listing_text, re.IGNORECASE)
-    if output_match:
-        output_cost = float(output_match.group(1)) / 1_000_000
-
+    # Parse pricing (detail page preferred, listing card as fallback)
+    input_cost, cached_cost, output_cost = parse_prices(listing_text, pricing_text)
     if input_cost is not None:
         entry["input_cost_per_token"] = input_cost
     if cached_cost is not None:
@@ -291,16 +319,15 @@ def build_entry(model_id: str, listing_text: str, detail: dict, upstream_entry: 
     if output_cost is not None:
         entry["output_cost_per_token"] = output_cost
 
-    # Parse context length
-    ctx = parse_context(listing_text)
+    # Parse context length (detail page preferred, listing card as fallback)
+    ctx = parse_context(detail_text) or parse_context(listing_text)
     if ctx is not None:
         entry["max_tokens"] = ctx
         entry["max_input_tokens"] = ctx
         entry["max_output_tokens"] = ctx
 
-    # Parse capabilities from detail page
-    caps = parse_capabilities(detail.get("functionality", ""))
-    entry.update(caps)
+    # Parse capabilities from the detail page Details section
+    entry.update(parse_capabilities(detail_text))
 
     # If listing says "Vision", force vision flag
     if "vision" in listing_text.lower():
