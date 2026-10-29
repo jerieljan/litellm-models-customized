@@ -16,12 +16,22 @@
                         "chat",
                         "embedding",
                         "completion",
+                        "decisions",
+                        "evaluation",
+                        "extraction",
+                        "guardrail",
+                        "image_edit",
                         "image_generation",
                         "audio_transcription",
                         "audio_speech",
                         "moderation",
+                        "ocr",
+                        "realtime",
                         "rerank",
-                        "search"
+                        "responses",
+                        "search",
+                        "vector_store",
+                        "video_generation"
                     ]
                 },
                 "max_tokens": {
